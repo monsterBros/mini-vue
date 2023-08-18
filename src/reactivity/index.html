@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+		function reactive(raw) {
+	return new Proxy(raw, {
+		get(target, key) {
+			// 依赖收集
+			let depsMap = bucket.get(target)
+			if (!depsMap) {
+				bucket.set(target, depsMap = new Map())
+			}
+			let deps = depsMap.get(key)
+			if (!deps) {
+				depsMap.set(key, deps = new Set())
+			}
+			deps.add(effect)
+			return target[key];
+		},
+		set(target, key, value) {
+			target[key] = value;
+			// 派发通知
+			let effects = null
+			let depsMap = bucket.get(target)
+			console.log('depsMap', depsMap)
+			if (depsMap) {
+				effects = depsMap.get(key)
+			}
+			console.log('effects',effects)
+			effects && effects.forEach(effect => effect())
+			return true;
+		}
+	})
+
+}
+		let bucket = new WeakMap()
+		
+		let data = {
+			a: 1
+		}
+
+		let observeData = reactive(data)
+
+	function effect() {
+		document.body.innerText = observeData.a
+	}
+
+	effect()
+	setTimeout(() => {
+		observeData.a = 2
+		console.log('observeData',observeData)
+	}, 2000)
+
+
+
+
+
+	</script>
+</body>
+</html>
