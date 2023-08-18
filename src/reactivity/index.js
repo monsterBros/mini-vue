@@ -6,7 +6,7 @@ let data = {
 let observeData = reactive(data)
 
 function effect() {
-	document.body.innerText = observeData.a
+	// document.body.innerText = observeData.a
 }
 
 effect()
