@@ -47,12 +47,16 @@ function setupRenderEffect(instance, container){
 }
 
 function createComponentInstance(vnode){
-
+    const component = {
+        vnode
+    }
+    return component
 }
 
 function setupComponent(instance){
     // init props
     // init slot
+    
     setupStatefulComponent(instance)
 }
 
@@ -79,9 +83,9 @@ function handleSetupResulu(instance,setupResult){
 }
 
 function finishComponentSetup(instance){
-    const component = instance.type
-    if(component.render){
+    const component = instance.vnode.type
+    // if(component.render){
         instance.render = component.render
-    }
+    // }
 
 }
