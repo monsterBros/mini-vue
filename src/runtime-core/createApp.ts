@@ -32,7 +32,29 @@ function processComponent(vnode, container){
 }
 
 function processElement(vnode, container){
+    // init update
+     mountElement(vnode, container)
+}
 
+function mountElement(vnode, container){
+    const el = document.createElement(vnode.type)
+    // string element  类型
+    const {children} = vnode
+
+    if(typeof children == 'string'){
+        el.textContent = children
+    }else if(Array.isArray(children)){
+        children.forEach(v=>{
+            patch(v,el)
+        })
+    }
+    // props
+    const {props}  = vnode
+    for(const key in props){
+        const val = props[key]
+        el.setAttribute(key,val )
+    }
+    container.append(el)
 }
 
 function mountComponent(vnode, container){
@@ -48,7 +70,8 @@ function setupRenderEffect(instance, container){
 
 function createComponentInstance(vnode){
     const component = {
-        vnode
+        vnode,
+        type: vnode.type
     }
     return component
 }
@@ -87,5 +110,4 @@ function finishComponentSetup(instance){
     // if(component.render){
         instance.render = component.render
     // }
-
 }
